@@ -1,0 +1,13 @@
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+
+  RewriteCond %{HTTPS} off
+  RewriteCond %{HTTP_HOST} ^pizza\.jpwillenborg\.com$ [NC]
+  RewriteRule ^(.*)$ https://jpwillenborg.com [L,R=301]
+
+  RewriteRule ^index\.html$ - [L]
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule . /index.html [L]
+</IfModule>
