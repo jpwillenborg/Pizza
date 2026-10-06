@@ -19,6 +19,7 @@ export default function App() {
     setOrderStatus,
     trackingError,
     trackOrder,
+    isTracking,
     API_BASE_URL
   } = usePizzaSockets();
 
@@ -26,7 +27,6 @@ export default function App() {
   const [selectedToppings, setSelectedToppings] = useState([]);
   const [cart, setCart] = useState([]);
   const [view, setView] = useState('dashboard');
-  const [isTracking, setIsTracking] = useState(false);
   const [checkoutError, setCheckoutError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -65,7 +65,6 @@ export default function App() {
 
       trackOrder(result.id);
       setView('tracking');
-      setIsTracking(true);
       setCart([]);
     } catch (error) {
       setCheckoutError(error.message);
@@ -84,33 +83,35 @@ export default function App() {
   }
 
   return (
-    <div className="w-full max-w-full overflow-x-hidden min-h-screen flex flex-col justify-start bg-[#090d16] relative font-sans antialiased text-[#a0aec0]">
-      <div className="app-shell flex flex-col w-full max-w-full overflow-x-hidden box-border">
+    <div className="w-full max-w-full overflow-x-hidden min-h-screen flex flex-col justify-between bg-[#090d16] relative font-sans antialiased text-[#a0aec0]">
+      <div className="app-shell flex flex-col w-full max-w-full overflow-x-hidden box-border flex-grow md:min-h-[820px]">
         <SiteNavbar />
-        <div className="pt-[125px] md:pt-[140px] lg:pt-[160px] pb-[5.15rem] px-6 sm:px-8 md:px-[40px] lg:px-6 w-full relative z-10">
-          <div className="max-w-[1024px] mx-auto w-full">
+        <div className="pt-[125px] md:pt-[140px] lg:pt-[160px] pb-4 px-6 sm:px-8 md:px-[40px] lg:px-6 w-full relative z-10 flex flex-col justify-start flex-grow">
+          <div className="max-w-[1024px] mx-auto w-full flex flex-col justify-start flex-grow">
             <DashboardHeader view={view} isTracking={isTracking} setView={setView} />
             {sandboxError && <p role="alert" className="text-red-300 text-sm">{sandboxError}</p>}
 
-            {view === 'tracking' && (
-              <TrackingView orderStatus={orderStatus} trackingError={trackingError} setView={setView} setIsTracking={setIsTracking} />
-            )}
-            
-            {view === 'admin' && (
-              <KitchenAdmin 
-                orderStatus={orderStatus} setOrderStatus={setOrderStatus} apiBaseUrl={API_BASE_URL} sandboxKey={sandboxKey}
-                formatCurrency={formatCurrency} getNumericPrice={getNumericPrice} 
-              />
-            )}
-            
-            {view === 'dashboard' && (
-              <PizzaDashboard 
-                menu={menu} size={size} setSize={setSize} selectedToppings={selectedToppings} 
-                handleToppingToggle={handleToppingToggle} resetToppings={resetToppings} getPizzaPrice={getPizzaPrice} 
-                formatCurrency={formatCurrency} cart={cart} setCart={setCart} handleCheckout={handleCheckout}
-                checkoutError={checkoutError} isSubmitting={isSubmitting}
-              />
-            )}
+            <div className="w-full box-border flex flex-col justify-start flex-grow">
+              {view === 'tracking' && (
+                <TrackingView orderStatus={orderStatus} trackingError={trackingError} setView={setView} setIsTracking={() => {}} />
+              )}
+              
+              {view === 'admin' && (
+                <KitchenAdmin 
+                  orderStatus={orderStatus} setOrderStatus={setOrderStatus} apiBaseUrl={API_BASE_URL} sandboxKey={sandboxKey}
+                  formatCurrency={formatCurrency} getNumericPrice={getNumericPrice} 
+                />
+              )}
+              
+              {view === 'dashboard' && (
+                <PizzaDashboard 
+                  menu={menu} size={size} setSize={setSize} selectedToppings={selectedToppings} 
+                  handleToppingToggle={handleToppingToggle} resetToppings={resetToppings} getPizzaPrice={getPizzaPrice} 
+                  formatCurrency={formatCurrency} cart={cart} setCart={setCart} handleCheckout={handleCheckout}
+                  checkoutError={checkoutError} isSubmitting={isSubmitting}
+                />
+              )}
+            </div>
           </div>
         </div>
       </div>

@@ -7,13 +7,17 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# Dependencies and Build Outputs
 node_modules
-.env
-.env.*
-!.env.example
-.env.local
 dist
 dist-ssr
+
+# Security Rules: Hide real keys, but keep the template visible
+.env
+.env.local
+!.env.development
+!.env.production
+!.env.example
 *.local
 
 # Editor directories and files

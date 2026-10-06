@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import OrderHistoryRow from './OrderHistoryRow';
 
 export default function KitchenAdmin({ orderStatus, setOrderStatus, apiBaseUrl, sandboxKey, formatCurrency, getNumericPrice }) {
@@ -14,7 +14,7 @@ export default function KitchenAdmin({ orderStatus, setOrderStatus, apiBaseUrl, 
   const adminKey = sandboxKey;
 
   const handleConnect = async (event) => {
-    event.preventDefault();
+    if (event) event.preventDefault();
     setAdminError('');
     setIsLoading(true);
 
@@ -25,7 +25,13 @@ export default function KitchenAdmin({ orderStatus, setOrderStatus, apiBaseUrl, 
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || 'Admin access was denied.');
       setOrderHistory(data);
-      if (data && data[0]) setOrderStatus(data[0].status);
+      
+      if (data && data.length > 0) {
+        const sortedByRecent = [...data].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+        setOrderStatus(sortedByRecent[0].status);
+      } else {
+        setOrderStatus('No Active Order');
+      }
       setIsAuthorized(true);
     } catch (error) {
       setAdminError(error.message);
@@ -34,7 +40,7 @@ export default function KitchenAdmin({ orderStatus, setOrderStatus, apiBaseUrl, 
     }
   };
 
-  const handleAdminUpdate = async (receiptId, nextStatus, index) => {
+  const handleAdminUpdate = async (receiptId, nextStatus) => {
     try {
       const response = await fetch(`${apiBaseUrl}/api/orders/status`, {
         method: 'PUT',
@@ -47,8 +53,11 @@ export default function KitchenAdmin({ orderStatus, setOrderStatus, apiBaseUrl, 
       setOrderHistory((history) => history.map((order) => (
         order.id === receiptId ? { ...order, status: nextStatus } : order
       )));
-      
-      if (index === 0) {
+
+      const sortedByRecent = [...orderHistory].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+      if (sortedByRecent.length > 0 && sortedByRecent[0].id === receiptId) {
+        setOrderStatus(nextStatus);
+      } else if (orderHistory.length === 1) {
         setOrderStatus(nextStatus);
       }
       setAdminError('');
@@ -57,8 +66,8 @@ export default function KitchenAdmin({ orderStatus, setOrderStatus, apiBaseUrl, 
     }
   };
 
-  const handleRowStatusChange = (receiptId, nextStatus, index) => {
-    handleAdminUpdate(receiptId, nextStatus, index);
+  const handleRowStatusChange = (receiptId, nextStatus) => {
+    handleAdminUpdate(receiptId, nextStatus);
   };
 
   const handleWipeLogs = async () => {
@@ -74,6 +83,7 @@ export default function KitchenAdmin({ orderStatus, setOrderStatus, apiBaseUrl, 
         throw new Error(data.error || 'Unable to clear order history.');
       }
       setOrderHistory([]);
+      setOrderStatus('No Active Order');
       setAdminError('');
     } catch (error) {
       setAdminError(error.message);
@@ -82,44 +92,72 @@ export default function KitchenAdmin({ orderStatus, setOrderStatus, apiBaseUrl, 
 
   if (!isAuthorized) {
     return (
-      <form onSubmit={handleConnect} className="max-w-[480px] mx-auto bg-background-surface mb-16 p-6 rounded-[12px] shadow-flat-card">
-        <h3 className="mt-0 text-[1.25rem] font-bold text-white">Kitchen Admin Access</h3>
-        <label htmlFor="admin-key" className="block text-slateText-muted text-sm mb-2">Visitor sandbox admin key</label>
-        <input
-          id="admin-key"
-          type="text"
-          autoComplete="off"
-          value={adminKey}
-          readOnly
-          required
-          className="w-full box-border p-3 bg-background border-0 text-white rounded-[6px] text-[0.95rem] outline-none focus:ring-2 focus:ring-accent-primary/20"
-        />
-        <p className="text-slateText-muted text-sm mt-2">This public demo key is limited to this browser's fictional order data and expires after 24 hours.</p>
-        {adminError && <p role="alert" className="text-red-300 text-sm">{adminError}</p>}
-        <button type="submit" disabled={isLoading || !adminKey} className="mt-4 w-full py-3 bg-accent-primary text-background border-0 rounded-[6px] py-[0.55rem] text-[0.85rem] font-bold cursor-pointer disabled:opacity-60">
-          {isLoading ? 'Checking access...' : 'Unlock Kitchen Admin'}
-        </button>
-      </form>
+      <div className="w-full box-border md:min-h-[820px] flex flex-col justify-start">
+        <form onSubmit={handleConnect} className="max-w-[480px] mx-auto bg-background-surface mb-16 p-6 rounded-[12px] shadow-flat-card text-left md:mt-[52px] w-full box-border">
+          <h3 className="mt-0 text-[1.25rem] font-bold text-white">Kitchen Admin Access</h3>
+          <label htmlFor="admin-key" className="block text-slateText-muted text-sm mb-2">Visitor sandbox admin key</label>
+          <input
+            id="admin-key"
+            type="text"
+            autoComplete="off"
+            value={adminKey}
+            readOnly
+            required
+            className="w-full box-border p-3 bg-background border-0 text-white rounded-[6px] text-[0.95rem] outline-none focus:ring-2 focus:ring-accent-primary/20"
+          />
+          <p className="text-slateText-muted text-sm mt-2">This public demo key is limited to this browser's fictional order data and expires after 24 hours.</p>
+          {adminError && <p role="alert" className="text-red-300 text-sm">{adminError}</p>}
+          <button type="submit" disabled={isLoading || !adminKey} className="mt-4 w-full py-3 bg-accent-primary text-background border-0 rounded-[6px] py-[0.55rem] text-[0.85rem] font-bold cursor-pointer disabled:opacity-60">
+            {isLoading ? 'Checking access...' : 'Unlock Kitchen Admin'}
+          </button>
+        </form>
+      </div>
     );
   }
+  const sortedOrdersForDisplay = [...orderHistory].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+  const activeLiveOrder = sortedOrdersForDisplay.length > 0 ? sortedOrdersForDisplay[0] : null;
+
   return (
-    <div className="flex flex-col gap-8 w-full box-border mb-24">
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 w-full box-border">
-        <div className="bg-background-surface p-5 rounded-[16px] border-l-[4px] border-l-accent-primary flex flex-col gap-1 shadow-flat-card transition-colors duration-250 ease-out hover:bg-background-hover">
-          <span className="text-[0.8rem] font-bold text-slateText-muted uppercase tracking-wider">⏳ In Progress</span>
-          <strong className="text-[1.55rem] text-white font-bold">{activeOrdersCount} {activeOrdersCount === 1 ? 'Order' : 'Orders'}</strong>
+    <div className="flex flex-col gap-6 w-full box-border mb-24 text-left">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 w-full box-border">
+        <div className="bg-background-surface p-5 rounded-[16px] border-l-[4px] border-l-accent-primary flex flex-row md:flex-col items-center md:items-start justify-between md:justify-start gap-2 shadow-flat-card transition-colors duration-250 ease-out hover:bg-background-hover">
+          <div className="flex items-center gap-2.5 min-w-0">
+            <span className="text-[1.1rem] md:text-[0.95rem] flex-shrink-0" aria-hidden="true">⏳</span>
+            <span className="text-[0.8rem] font-bold text-slateText-muted uppercase tracking-wider truncate">In Progress</span>
+          </div>
+          <strong className="text-[1.35rem] md:text-[1.55rem] text-white font-bold font-sans md:mt-1 flex-shrink-0">
+            {activeOrdersCount} {activeOrdersCount === 1 ? 'Order' : 'Orders'}
+          </strong>
         </div>
-        <div className="bg-background-surface p-5 rounded-[16px] border-l-[4px] border-l-accent-primary flex flex-col gap-1 shadow-flat-card transition-colors duration-250 ease-out hover:bg-background-hover">
-          <span className="text-[0.8rem] font-bold text-slateText-muted uppercase tracking-wider">🍕 Cumulative Volume</span>
-          <strong className="text-[1.55rem] text-white font-bold">{aggregatePizzas} {aggregatePizzas === 1 ? 'Pizza' : 'Pizzas'}</strong>
+
+        <div className="bg-background-surface p-5 rounded-[16px] border-l-[4px] border-l-accent-primary flex flex-row md:flex-col items-center md:items-start justify-between md:justify-start gap-2 shadow-flat-card transition-colors duration-250 ease-out hover:bg-background-hover">
+          <div className="flex items-center gap-2.5 min-w-0">
+            <span className="text-[1.1rem] md:text-[0.95rem] flex-shrink-0" aria-hidden="true">📦</span>
+            <span className="text-[0.8rem] font-bold text-slateText-muted uppercase tracking-wider truncate">Volume</span>
+          </div>
+          <strong className="text-[1.35rem] md:text-[1.55rem] text-white font-bold font-sans md:mt-1 flex-shrink-0">
+            {aggregatePizzas} {aggregatePizzas === 1 ? 'Pizza' : 'Pizzas'}
+          </strong>
         </div>
-        <div className="bg-background-surface p-5 rounded-[16px] border-l-[4px] border-l-accent-primary flex flex-col gap-1 shadow-flat-card transition-colors duration-250 ease-out hover:bg-background-hover">
-          <span className="text-[0.8rem] font-bold text-slateText-muted uppercase tracking-wider">📊 Avg. Ticket</span>
-          <strong className="text-[1.55rem] text-white font-bold">{formatCurrency(averageReceiptBill)}</strong>
+
+        <div className="bg-background-surface p-5 rounded-[16px] border-l-[4px] border-l-accent-primary flex flex-row md:flex-col items-center md:items-start justify-between md:justify-start gap-2 shadow-flat-card transition-colors duration-250 ease-out hover:bg-background-hover">
+          <div className="flex items-center gap-2.5 min-w-0">
+            <span className="text-[1.1rem] md:text-[0.95rem] flex-shrink-0" aria-hidden="true">📊</span>
+            <span className="text-[0.8rem] font-bold text-slateText-muted uppercase tracking-wider truncate">Avg. Ticket</span>
+          </div>
+          <strong className="text-[1.35rem] md:text-[1.55rem] text-white font-bold font-mono md:mt-1 flex-shrink-0">
+            {formatCurrency(averageReceiptBill)}
+          </strong>
         </div>
-        <div className="bg-background-surface p-5 rounded-[16px] border-l-[4px] border-l-accent-primary flex flex-col gap-1 shadow-flat-card transition-colors duration-250 ease-out hover:bg-background-hover">
-          <span className="text-[0.8rem] font-bold text-slateText-muted uppercase tracking-wider">📈 Earnings</span>
-          <strong className="text-[1.55rem] text-white font-bold">{formatCurrency(lifetimeRevenue)}</strong>
+
+        <div className="bg-background-surface p-5 rounded-[16px] border-l-[4px] border-l-accent-primary flex flex-row md:flex-col items-center md:items-start justify-between md:justify-start gap-2 shadow-flat-card transition-colors duration-250 ease-out hover:bg-background-hover">
+          <div className="flex items-center gap-2.5 min-w-0">
+            <span className="text-[1.1rem] md:text-[0.95rem] flex-shrink-0" aria-hidden="true">💰</span>
+            <span className="text-[0.8rem] font-bold text-slateText-muted uppercase tracking-wider truncate">Earnings</span>
+          </div>
+          <strong className="text-[1.35rem] md:text-[1.55rem] text-white font-bold font-mono md:mt-1 flex-shrink-0">
+            {formatCurrency(lifetimeRevenue)}
+          </strong>
         </div>
       </div>
 
@@ -127,31 +165,30 @@ export default function KitchenAdmin({ orderStatus, setOrderStatus, apiBaseUrl, 
         <div className="col-span-1 h-full">
           <div className="bg-background-surface p-6 rounded-[16px] shadow-flat-card transition-colors duration-250 ease-out hover:bg-background-hover h-full flex flex-col justify-between box-border">
             <div>
-              <h3 className="mt-0 text-[1.4rem] font-bold text-white">🛠️ Kitchen Dispatch</h3>
+              <h3 className="mt-0 text-[1.4rem] font-bold text-white">🍕 Kitchen Dispatch</h3>
               <p className="text-slateText-muted text-[0.95rem] mb-6 leading-[1.65]">Stream live status updates without refreshing the page.</p>
               <div className="bg-background p-4 rounded-[8px] mb-6 border-l-[4px] border-l-accent-primary text-[1.05rem]">
-                <strong className="text-white font-medium">Active Status:</strong> 
-                <span className="text-accent-primary font-bold block mt-1">{orderStatus}</span>
+                <strong className="text-white font-medium">Current Status:</strong> 
+                <span className="text-accent-primary font-bold block mt-1">{orderStatus || 'No Active Order'}</span>
               </div>
             </div>
             
             <div className="flex flex-col gap-3">
               {['Received', 'Preparing', 'Baking', 'Out for Delivery', 'Delivered'].map((stage) => {
                 const isActive = orderStatus === stage;
-                const latestOrder = orderHistory[0];
                 return (
                   <button 
                     key={stage} 
                     type="button"
-                    disabled={!latestOrder}
-                    onClick={() => handleAdminUpdate(latestOrder.id, stage, 0)}
-                    className={`p-4 text-[0.95rem] font-bold cursor-pointer text-left rounded-[8px] border-0 text-white transition-all duration-150 flex items-center justify-start gap-4 w-full outline-none focus-visible:ring-2 focus-visible:ring-accent-primary/20 ${isActive ? 'bg-white/10' : 'bg-background hover:bg-white/5'}`}
+                    disabled={!activeLiveOrder}
+                    onClick={() => activeLiveOrder && handleAdminUpdate(activeLiveOrder.id, stage)}
+                    className={`p-4 text-[0.95rem] font-bold cursor-pointer text-left rounded-[8px] border-0 text-white transition-all duration-150 flex items-center justify-start gap-4 w-full outline-none focus-visible:ring-2 focus-visible:ring-accent-primary/20 ${isActive && activeLiveOrder ? 'bg-accent-primary/25' : 'bg-background hover:bg-white/5 disabled:opacity-50 disabled:cursor-not-allowed'}`}
                   >
-                    <div className={`w-4 h-4 rounded-full flex items-center justify-center flex-shrink-0 border-2 ${isActive ? 'border-accent-primary' : 'border-white/30'}`}>
-                      {isActive && <div className="w-2 h-2 bg-accent-primary rounded-full" />}
+                    <div className={`w-4 h-4 rounded-full flex items-center justify-center flex-shrink-0 border-2 ${isActive && activeLiveOrder ? 'border-accent-primary' : 'border-white/30'}`}>
+                      {isActive && activeLiveOrder && <div className="w-2 h-2 bg-accent-primary rounded-full" />}
                     </div>
-                    <span className={isActive ? 'text-accent-primary' : 'text-slateText-muted'}>
-                      {isActive ? 'Active Step:' : 'Step:'} {stage}
+                    <span className={isActive && activeLiveOrder ? 'text-accent-primary' : 'text-slateText-muted'}>
+                      {isActive && activeLiveOrder ? '' : 'Step:'} {stage}
                     </span>
                   </button>
                 );
@@ -161,9 +198,9 @@ export default function KitchenAdmin({ orderStatus, setOrderStatus, apiBaseUrl, 
         </div>
 
         <div className="col-span-1 md:col-span-2">
-          <div className="bg-background-surface p-6 rounded-[16px] shadow-flat-card transition-colors duration-250 ease-out hover:bg-background-hover">
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-3 flex-wrap">
-              <h3 className="m-0 text-[1.4rem] font-bold text-white">📁 Order History</h3>
+          <div className="bg-background-surface p-6 rounded-[16px] shadow-flat-card transition-colors duration-250 ease-out hover:bg-background-hover h-full flex flex-col box-border">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-3 flex-wrap flex-shrink-0">
+              <h3 className="m-0 text-[1.4rem] font-bold text-white">📜 Order History</h3>
               <div className="flex items-center gap-3">
                 <button
                   type="button"
@@ -186,16 +223,16 @@ export default function KitchenAdmin({ orderStatus, setOrderStatus, apiBaseUrl, 
                 )}
               </div>
             </div>
-            {adminError && <p role="alert" className="text-red-300 text-sm">{adminError}</p>}
-            {orderHistory.length === 0 ? (
+            {adminError && <p role="alert" className="text-red-300 text-sm flex-shrink-0 mb-2">{adminError}</p>}
+            {sortedOrdersForDisplay.length === 0 ? (
               <p className="text-slateText-muted italic text-[0.95rem] m-0">No historical transactions captured in datastore cache yet.</p>
             ) : (
-              <div className="flex flex-col gap-4 max-h-[515px] overflow-y-auto pr-1 [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-white/10 [&::-webkit-scrollbar-thumb]:rounded-full">
-                {orderHistory.map((receipt, index) => (
+              <div className="flex flex-col gap-4 max-h-[465px] overflow-y-auto pr-2 flex-grow [&::-webkit-scrollbar]:w-[5px] [&::-webkit-scrollbar-track]:bg-[#090d16] [&::-webkit-scrollbar-thumb]:bg-[#232d3f] hover:[&::-webkit-scrollbar-thumb]:bg-[#2d3952] [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-thumb]:rounded-full">
+                {sortedOrdersForDisplay.map((receipt, displayIndex) => (
                   <OrderHistoryRow 
                     key={receipt.id}
                     receipt={receipt}
-                    index={index}
+                    index={orderHistory.findIndex(o => o.id === receipt.id)}
                     handleRowStatusChange={handleRowStatusChange}
                     formatCurrency={formatCurrency}
                   />

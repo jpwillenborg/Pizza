@@ -3,86 +3,149 @@ import React, { useState } from 'react';
 export default function OrderHistoryRow({ receipt, index, handleRowStatusChange, formatCurrency }) {
   const [isExpanded, setIsExpanded] = useState(false);
 
+  // Clean, monotone-friendly server timestamp formatter
+  const orderTimestamp = receipt.createdAt 
+    ? new Date(receipt.createdAt).toLocaleString('en-US', {
+        year: '2-digit',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: true
+      }).replace(',', ' @')
+    : receipt.timestamp || '10/06/26 @ 11:57:29 AM';
+
+  // Helper function to capitalize words and replace underscores
+  const formatToppingName = (topping) => {
+    if (!topping) return '';
+    return topping
+      .replace(/_/g, ' ')
+      .split(' ')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
+  };
+
   return (
-    <div className="rounded-[12px] p-5 bg-background flex flex-col gap-3 box-border shadow-md">
-      <div className="flex justify-between items-start sm:items-center flex-wrap gap-2">
-        <div className="flex min-w-0 flex-col items-start gap-1 sm:flex-row sm:items-center sm:gap-2">
-          <strong className="order-1 text-white text-[1.05rem] font-mono">{receipt.id}</strong>
-          <span className="order-2 text-[0.8rem] text-slateText-muted font-mono sm:order-3 sm:ml-2">Logged: {receipt.timestamp}</span>
-          <select
-            className="order-3 p-[4px_8px] text-[0.8rem] font-bold border-0 rounded-[6px] text-white cursor-pointer outline-none bg-background-surface focus-visible:ring-2 focus-visible:ring-accent-primary/20 sm:order-2"
-            value={receipt.status}
-            onChange={(e) => handleRowStatusChange(receipt.id, e.target.value, index)}
-          >
-            {['Received', 'Preparing', 'Baking', 'Out for Delivery', 'Delivered'].map(stage => (
-              <option key={stage} value={stage} className="bg-background-surface text-white">{stage}</option>
-            ))}
-          </select>
-        </div>
-        <div className="text-right font-bold text-accent-primary text-[1.1rem] font-mono">
-          {formatCurrency(receipt.totalBill)}
-        </div>
-      </div>
-
-      <div className="bg-background-surface p-4 rounded-[8px] text-[0.9rem] text-slateText-muted relative min-h-[72px]">
-        <div className="absolute top-4 right-4 flex flex-col items-end gap-2 text-right">
-          <span className="text-[0.9rem] font-sans text-slateText-muted">
-            <strong>Pizzas:</strong> <span className="font-bold text-white">{receipt.items ? receipt.items.length : 0}</span>
+    <div className="bg-background p-6 rounded-[12px] transition-all duration-150 flex flex-col gap-5 text-left w-full box-border font-mono">
+      
+      {/* Tier 1: Unified Horizontal Header Track (All items aligned flush at top) */}
+      <div className="flex flex-row items-start justify-between w-full gap-4">
+        
+        {/* Left Aspect: Order Identifier Info */}
+        <div className="flex flex-col gap-0.5">
+          <span className="text-[0.85rem] font-bold text-white/40 uppercase tracking-wider block">ORDER NUMBER</span>
+          <strong className="text-white text-[1.25rem] font-medium tracking-tight">ORD-{receipt.id.toString().slice(-6)}</strong>
+          <span className="text-slateText-white/70 text-[0.85rem] mt-0.5 block">
+            {orderTimestamp}
           </span>
-          {receipt.items && receipt.items.length > 0 && (
-            <button
-              type="button"
-              onClick={() => setIsExpanded(!isExpanded)}
-              className="hidden sm:block px-3 py-1.5 text-[0.75rem] font-bold font-sans rounded-[6px] border-0 cursor-pointer transition-all duration-200 outline-none bg-white/5 text-white hover:bg-white/12 focus-visible:ring-2 focus-visible:ring-accent-primary/20"
-            >
-              {isExpanded ? 'Hide Details' : 'View Details'}
-            </button>
-          )}
         </div>
-        <div className="font-bold mb-2 text-white">Fictional demo customer</div>
-        <div className="leading-relaxed"><strong>Name:</strong> {receipt.customer?.name || 'Sandbox Guest'}</div>
-        <div className="leading-relaxed"><strong>Phone:</strong> {receipt.customer?.phone || 'Not provided'}</div>
-        <div className="leading-relaxed"><strong>Address:</strong> {receipt.customer?.address || 'DEMO PICKUP ONLY'}</div>
-        <div className="text-[0.72rem] text-slateText-muted/70 mt-2">Fictional test data; no visitor contact details are collected.</div>
-        {receipt.items && receipt.items.length > 0 && (
-          <div className="flex justify-end mt-4 sm:hidden">
-            <button
+
+        {/* Right Aspect: Fully Integrated Stacked Status & Navigation Hub */}
+        <div className="flex flex-col gap-1 text-right flex-shrink-0">
+          <label 
+            htmlFor={`status-select-${receipt.id}`} 
+            className="text-[0.85rem] font-bold text-white/40 uppercase tracking-wider block"
+          >
+            STATUS:
+          </label>
+          
+          <div className="flex items-center gap-3">
+            <button 
               type="button"
               onClick={() => setIsExpanded(!isExpanded)}
-              className="px-3 py-1.5 text-[0.75rem] font-bold font-sans rounded-[6px] border-0 cursor-pointer transition-all duration-200 outline-none bg-white/5 text-white hover:bg-white/12 focus-visible:ring-2 focus-visible:ring-accent-primary/20"
+              className={`text-[0.85rem] font-bold rounded-[4px] px-4 h-[38px] flex items-center justify-center cursor-pointer transition-all duration-150 outline-none border-0 ${
+                isExpanded 
+                  ? 'bg-white/10 text-white' 
+                  : 'bg-background-surface text-white/80 hover:text-white'
+              }`}
             >
               {isExpanded ? 'Hide Details' : 'View Details'}
             </button>
+
+            <select
+              id={`status-select-${receipt.id}`}
+              value={receipt.status}
+              onChange={(e) => handleRowStatusChange(receipt.id, e.target.value, index)}
+              className="p-[0rem_1.75rem_0rem_0.65rem] h-[38px] text-[0.85rem] font-bold rounded-[4px] bg-background-surface border-0 text-white outline-none cursor-pointer hover:text-white transition-all focus:ring-1 focus:ring-white/20"
+            >
+              <option value="Received">Received</option>
+              <option value="Preparing">Preparing</option>
+              <option value="Baking">Baking</option>
+              <option value="Out for Delivery">Out for Delivery</option>
+              <option value="Delivered">Delivered</option>
+            </select>
           </div>
-        )}
+        </div>
+
       </div>
 
-      {isExpanded && receipt.items && (
-        <div className="bg-background-surface/40 border border-slate-800/30 rounded-[8px] p-3.5 mt-0.5 flex flex-col gap-2.5">
-          {receipt.items.map((pizza, idx) => (
-            <div key={idx} className="text-sm flex flex-col gap-0.5 pb-2 last:pb-0 border-b border-slate-800/20 last:border-b-0">
-              <div className="flex justify-between items-center">
-                <span className="capitalize text-white font-medium font-mono text-[0.9rem]">
-                  🍕 Pizza #{idx + 1}: {pizza.size} Size
+      {/* Tier 2: Unified Customer Details & Financial Totals */}
+      <div className="flex flex-row items-end justify-between w-full border-t border-white/[0.04] pt-4 gap-6">
+        
+        {/* Left Side Column Block: Vertically Stacked Contact Info */}
+        <div className="flex flex-col gap-2 min-w-0 flex-grow">
+          <div className="flex items-center gap-2.5">
+            <span className="text-[0.85rem] font-bold text-white/40 uppercase tracking-wider flex-shrink-0">CUSTOMER:</span>
+            <span className="text-white text-[1rem] font-medium truncate">{receipt.customer?.name || receipt.customerName || 'Sandbox Guest'}</span>
+          </div>
+          
+          <div className="flex items-center gap-2.5">
+            <span className="text-[0.85rem] font-bold text-white/40 uppercase tracking-wider flex-shrink-0">PHONE:</span>
+            <span className="text-white text-[0.98rem] font-medium truncate">{receipt.customer?.phone || receipt.customerPhone || 'N/A'}</span>
+          </div>
+          
+          <div className="flex items-center gap-2.5">
+            <span className="text-[0.85rem] font-bold text-white/40 uppercase tracking-wider flex-shrink-0">ADDRESS:</span>
+            <span className="text-white/90 text-[1rem] font-medium truncate">{receipt.customer?.address || receipt.customerAddress || 'DEMO DELIVERY ONLY'}</span>
+          </div>
+        </div>
+
+        {/* Right Side Column Block: Quantities Stacking Stacked Flush Above Prices */}
+        <div className="flex flex-col gap-3 text-right flex-shrink-0">
+          <div className="flex flex-col gap-0.5">
+            <span className="text-[0.85rem] font-bold text-white/40 uppercase tracking-wider block">QUANTITY</span>
+            <strong className="text-white text-[1rem] font-medium block">
+              {receipt.items?.length || 0} {receipt.items?.length === 1 ? 'Pizza' : 'Pizzas'}
+            </strong>
+          </div>
+          
+          <div className="flex flex-col gap-0.5">
+            <span className="text-[0.85rem] font-bold text-white/40 uppercase tracking-wider block">TOTAL COST</span>
+            <strong className="text-white text-[1.3rem] font-medium tracking-tight block">{formatCurrency(receipt.totalBill)}</strong>
+          </div>
+        </div>
+
+      </div>
+
+      {/* Tier 3: Itemized Toppings Breakdown Drawer (Removed scrollbar and height restrictions to let all items render instantly) */}
+      {isExpanded && (
+        <div className="bg-white/[0.04] p-4 rounded-[6px] text-[0.95rem] text-white/90 leading-relaxed flex flex-col gap-2.5 mt-1">
+          {receipt.items?.map((pizza, pIdx) => (
+            <div key={pIdx} className="flex flex-row items-center justify-between pb-2 mb-1 border-b border-white/[0.02] last:border-0 last:pb-0 last:mb-0">
+              <div className="flex flex-row items-center gap-4 w-full min-w-0">
+                
+                {/* Fixed layout alignment column baseline */}
+                <span className="capitalize font-medium text-white w-[140px] flex-shrink-0">
+                  Pizza #{pIdx + 1}: {pizza.size}
                 </span>
-                {pizza.verifiedPrice && (
-                  <span className="text-slateText-muted text-[0.8rem] font-mono">
-                    {formatCurrency(pizza.verifiedPrice)}
-                  </span>
-                )}
+
+                {/* Raw ingredients capsule */}
+                <span className="text-[0.85rem] text-white/70 bg-white/5 px-2 py-0.5 rounded-[4px] text-left whitespace-normal break-words flex-grow min-w-0">
+                  {pizza.toppings?.length === 0 ? 'Cheese Base' : pizza.toppings?.map(formatToppingName).join(', ')}
+                </span>
+
               </div>
-              <div className="text-[0.8rem] text-slateText-muted pl-4">
-                <span className="text-slateText-muted/60">Ingredients: </span>
-                {pizza.toppings && pizza.toppings.length > 0 ? (
-                  pizza.toppings.map(id => id.replace(/_/g, ' ')).join(', ')
-                ) : (
-                  <span className="italic text-slateText-muted/40">Plain Cheese Base</span>
-                )}
-              </div>
+              {pizza.price && (
+                <span className="text-white font-medium pl-4 flex-shrink-0">
+                  {formatCurrency(pizza.price || pizza.verifiedPrice)}
+                </span>
+              )}
             </div>
           ))}
         </div>
       )}
+
     </div>
   );
 }

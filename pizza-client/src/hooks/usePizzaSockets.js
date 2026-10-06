@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { io } from 'socket.io-client';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://full-stack-pizza.onrender.com';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://onrender.com';
 const SANDBOX_STORAGE_KEY = 'pizza-demo-sandbox';
+const PERSISTENT_TRACK_KEY = 'activePizzaOrder';
 
 let sandboxSessionRequest;
 
@@ -68,7 +69,9 @@ export function usePizzaSockets() {
   const [sandboxKey, setSandboxKey] = useState('');
   const [sandboxError, setSandboxError] = useState('');
   const [orderStatus, setOrderStatus] = useState('Received');
-  const [trackedOrderId, setTrackedOrderId] = useState(null);
+  const [trackedOrderId, setTrackedOrderId] = useState(() => {
+    return localStorage.getItem(PERSISTENT_TRACK_KEY);
+  });
   const [trackingError, setTrackingError] = useState('');
 
   useEffect(() => {
@@ -102,7 +105,6 @@ export function usePizzaSockets() {
       controller.abort();
     };
   }, []);
-
   useEffect(() => {
     if (!trackedOrderId || !sandboxKey) return undefined;
 
@@ -127,6 +129,7 @@ export function usePizzaSockets() {
   const trackOrder = (orderId) => {
     setTrackingError('');
     setOrderStatus('Received');
+    localStorage.setItem(PERSISTENT_TRACK_KEY, orderId);
     setTrackedOrderId(orderId);
   };
 
@@ -139,6 +142,7 @@ export function usePizzaSockets() {
     setOrderStatus,
     trackingError,
     trackOrder,
+    isTracking: !!trackedOrderId,
     API_BASE_URL
   };
 }

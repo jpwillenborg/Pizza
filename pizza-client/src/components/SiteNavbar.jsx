@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 
 export default function SiteNavbar() {
-  const [hasScrolledDown, setHasScrolledDown] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [hasScrolledDown, setHasScrolledDown] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -41,7 +41,8 @@ export default function SiteNavbar() {
     { label: 'Tech Stack', href: `${PORTFOLIO_URL}/#stacks` },
     { label: 'Web Apps', href: `${PORTFOLIO_URL}/#apps` },
     { label: 'Game Dev', href: `${PORTFOLIO_URL}/#gamedev` },
-    { label: '3D Modeling', href: `${PORTFOLIO_URL}/#modeling` }
+    { label: '3D Modeling', href: `${PORTFOLIO_URL}/#modeling` },
+    { label: "Let's Connect", href: `${PORTFOLIO_URL}/#contact` }
   ];
 
   return (
@@ -53,7 +54,7 @@ export default function SiteNavbar() {
             <div className="w-1/2 min-[1040px]:w-1/4 text-left">
               <a 
                 href={`${PORTFOLIO_URL}/#top`} 
-                className="text-[1.75rem] font-bold text-white no-underline tracking-tight inline-block lowercase font-sans"
+                className="text-[1.75rem] font-bold text-white no-underline tracking-tight inline-block lowercase font-sans cursor-pointer rounded-[4px] focus-ring"
               >
                 john<span className="text-[#00e5ff]" aria-hidden="true">.</span>willenborg
               </a>
@@ -61,11 +62,11 @@ export default function SiteNavbar() {
 
             <div className="hidden min-[1040px]:flex min-[1040px]:w-1/2 justify-center items-center">
               <div className="flex gap-[2.75rem]">
-                {navItems.map((item) => (
+                {navItems.slice(0, 5).map((item) => (
                   <a 
                     key={item.label} 
                     href={item.href} 
-                    className="no-underline font-mono text-[#a0aec0] opacity-85 hover:text-[#00e5ff] hover:opacity-100 transition-all duration-200 text-[1.05rem] font-normal tracking-normal inline-block text-center"
+                    className="no-underline font-mono text-[#a0aec0] opacity-85 hover:text-[#00e5ff] hover:opacity-100 transition-all duration-200 text-[1.05rem] font-normal tracking-normal inline-block text-center rounded-[4px] focus-ring"
                   >
                     {item.label}
                   </a>
@@ -76,19 +77,21 @@ export default function SiteNavbar() {
             <div className="w-1/2 min-[1040px]:w-1/4 text-right flex justify-end items-center">
               <a 
                 href={`${PORTFOLIO_URL}/#contact`} 
-                className="hidden min-[1040px]:block bg-[#00e5ff] text-[#090d16] font-sans font-medium text-[0.85rem] tracking-[0.01em] normal-case rounded-[6px] px-[1.25rem] py-[0.45rem] shadow-flat-btn no-underline hover:bg-[#66efff] transition-all duration-200" 
+                className="hidden min-[1040px]:block bg-[#00e5ff] text-[#090d16] font-sans font-medium text-[0.85rem] tracking-[0.01em] normal-case rounded-[6px] px-[1.25rem] py-[0.45rem] shadow-flat-btn no-underline hover:bg-[#66efff] transition-all duration-200 focus-ring" 
               >
                 Let's Connect
               </a>
               <button 
                 type="button"
-                className="bg-transparent border-0 outline-none p-0 min-[1040px]:hidden text-[1.75rem] no-underline cursor-pointer" 
+                className="bg-transparent border-0 outline-none p-0 min-[1040px]:hidden text-[1.75rem] no-underline cursor-pointer rounded-[4px] focus-ring" 
                 onClick={() => setIsMobileMenuOpen((isOpen) => !isOpen)}
                 aria-expanded={isMobileMenuOpen}
                 aria-controls="pizza-mobile-nav"
                 aria-label="Toggle mobile navigation menu"
               >
-                <span className="text-[#a0aec0] opacity-85 hover:text-[#00e5ff] hover:opacity-100 transition-all duration-200">{isMobileMenuOpen ? '✕' : '☰'}</span>
+                <span className="text-[#a0aec0] opacity-85 hover:text-[#00e5ff] hover:opacity-100 transition-all duration-200">
+                  {isMobileMenuOpen ? '✕' : '☰'}
+                </span>
               </button>
             </div>
 
@@ -97,24 +100,19 @@ export default function SiteNavbar() {
       </nav>
 
       {isMobileMenuOpen && (
-        <div id="pizza-mobile-nav" aria-label="Mobile navigation" className="fixed inset-0 w-full h-full z-40 flex flex-col justify-center items-center min-[1040px]:hidden gap-8 bg-[#090d16]">
-          {navItems.map((item) => (
-            <a 
-              key={item.label} 
-              href={item.href}
-              onClick={() => setIsMobileMenuOpen(false)}
-              className="no-underline text-white font-mono font-bold text-[1.35rem] md:text-[1.65rem] tracking-wide hover:text-[#00e5ff] transition-colors"
-            >
-              {item.label}
-            </a>
-          ))}
-          <a 
-            href={`${PORTFOLIO_URL}/#contact`}
-            onClick={() => setIsMobileMenuOpen(false)}
-            className="no-underline text-[#00e5ff] font-mono font-bold text-[1.35rem] md:text-[1.65rem] tracking-wide hover:text-[#66efff] transition-colors"
-          >
-            Let's Connect
-          </a>
+        <div id="pizza-mobile-nav" aria-label="Mobile navigation" className="fixed inset-0 w-full h-full z-40 flex flex-col justify-center items-start min-[1040px]:hidden bg-[#090d16] px-10">
+          <div className="flex flex-col gap-5 border-l border-white/[0.04] pl-6 text-left">
+            {navItems.map((item) => (
+              <a 
+                key={item.label} 
+                href={item.href}
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="no-underline font-mono font-medium text-[1.25rem] md:text-[1.45rem] tracking-wide text-white/90 hover:text-[#00e5ff] transition-colors duration-200 rounded-[4px] focus-ring"
+              >
+                {item.label}
+              </a>
+            ))}
+          </div>
         </div>
       )}
     </>

@@ -1,5 +1,23 @@
-# Logs and background environment lockers
+# Dependency directories
 node_modules/
+
+# Production build distributions
 dist/
+
+# Security Rules: Block active runtime credentials
 .env
 .env.local
+.env.development
+.env.production
+
+# Exception Rule: Explicitly track the blueprint file on GitHub
+!.env.example
+
+# Log files and system locks
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.eslintcache
+.DS_Store
