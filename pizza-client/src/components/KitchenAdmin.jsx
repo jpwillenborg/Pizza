@@ -3,7 +3,23 @@ import OrderHistoryRow from './OrderHistoryRow';
 
 export default function KitchenAdmin({ orderStatus, setOrderStatus, apiBaseUrl, sandboxKey, formatCurrency, getNumericPrice }) {
   const [orderHistory, setOrderHistory] = useState([]);
+  // const [orderHistory, setOrderHistory] = useState([
+  //   {
+  //     id: "cfd83d17",
+  //     status: "Received",
+  //     totalBill: "21.00",
+  //     createdAt: new Date().toISOString(),
+  //     customerName: "Patrick Demo",
+  //     customerPhone: "+1-202-555-0103",
+  //     customerAddress: "DEMO PICKUP ONLY",
+  //     items: [
+  //       { size: "large", toppings: ["pepperoni", "onions"], price: 12.00 },
+  //       { size: "medium", toppings: ["extra_cheese"], price: 9.00 }
+  //     ]
+  //   }
+  // ]);
   const [isAuthorized, setIsAuthorized] = useState(false);
+  // const [isAuthorized, setIsAuthorized] = useState(true);
   const [adminError, setAdminError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   
