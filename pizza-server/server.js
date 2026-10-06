@@ -157,17 +157,17 @@ const STATUS_STAGES = ['Received', 'Preparing', 'Baking', 'Out for Delivery', 'D
 const DEMO_ORDER_PLANS = [
   {
     status: 'Preparing',
-    customer: { name: 'Christopher Test', phone: '+1-202-555-0101', address: 'DEMO PICKUP ONLY' },
+    customer: { name: 'Christopher Test', phone: '+1-202-555-0101', address: 'DEMO DELIVERY ONLY' },
     pizzas: [{ size: 'medium', toppings: ['pepperoni'] }]
   },
   {
     status: 'Delivered',
-    customer: { name: 'Mary Sample', phone: '+1-202-555-0102', address: 'DEMO PICKUP ONLY' },
+    customer: { name: 'Mary Sample', phone: '+1-202-555-0102', address: 'DEMO DELIVERY ONLY' },
     pizzas: [{ size: 'small', toppings: ['sausage'] }]
   },
   {
     status: 'Received',
-    customer: { name: 'Patrick Demo', phone: '+1-202-555-0103', address: 'DEMO PICKUP ONLY' },
+    customer: { name: 'Patrick Demo', phone: '+1-202-555-0103', address: 'DEMO DELIVERY ONLY' },
     pizzas: [
       { size: 'large', toppings: ['bacon', 'red_peppers', 'pineapple'] },
       { size: 'medium', toppings: ['extra_cheese'] }
@@ -233,7 +233,7 @@ app.post('/api/orders', orderRateLimiter, requireVisitorSandbox, async (req, res
       customer: {
         name: 'Sandbox Guest',
         phone: '+1-202-555-0100',
-        address: 'DEMO PICKUP ONLY'
+        address: 'DEMO DELIVERY ONLY'
       },
       items: validatedItems,
       total: grandTotal

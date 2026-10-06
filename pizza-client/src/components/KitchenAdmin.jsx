@@ -11,7 +11,7 @@ export default function KitchenAdmin({ orderStatus, setOrderStatus, apiBaseUrl, 
   //     createdAt: new Date().toISOString(),
   //     customerName: "Patrick Demo",
   //     customerPhone: "+1-202-555-0103",
-  //     customerAddress: "DEMO PICKUP ONLY",
+  //     customerAddress: "DEMO DELIVERY ONLY",
   //     items: [
   //       { size: "large", toppings: ["pepperoni", "onions"], price: 12.00 },
   //       { size: "medium", toppings: ["extra_cheese"], price: 9.00 }
