@@ -136,7 +136,7 @@ export default function PizzaDashboard({ menu, size, setSize, selectedToppings, 
                     type="text" 
                     value="Sandbox Guest" 
                     readOnly 
-                    className="w-full box-border p-2.5 bg-background border-0 text-white rounded-[6px] text-[0.9rem] font-medium outline-none opacity-80 cursor-not-allowed select-none"
+                    className="w-full box-border p-4 md:p-4 bg-background border-0 text-white rounded-[6px] text-[0.9rem] font-medium outline-none opacity-80 cursor-not-allowed select-none"
                   />
                 </div>
                 <div>
@@ -145,7 +145,7 @@ export default function PizzaDashboard({ menu, size, setSize, selectedToppings, 
                     type="text" 
                     value="(555) 019-2834" 
                     readOnly 
-                    className="w-full box-border p-2.5 bg-background border-0 text-white/90 rounded-[6px] text-[0.88rem] font-mono outline-none opacity-80 cursor-not-allowed select-none"
+                    className="w-full box-border p-4 md:p-4 bg-background border-0 text-white/90 rounded-[6px] text-[0.88rem] font-mono outline-none opacity-80 cursor-not-allowed select-none"
                   />
                 </div>
                 <div>
@@ -154,7 +154,7 @@ export default function PizzaDashboard({ menu, size, setSize, selectedToppings, 
                     type="text" 
                     value="DEMO DELIVERY ONLY" 
                     readOnly 
-                    className="w-full box-border p-2.5 bg-background border-0 text-white/80 rounded-[6px] text-[0.9rem] font-medium outline-none opacity-80 cursor-not-allowed select-none"
+                    className="w-full box-border p-4 md:p-4 bg-background border-0 text-white/80 rounded-[6px] text-[0.9rem] font-medium outline-none opacity-80 cursor-not-allowed select-none"
                   />
                 </div>
               </div>

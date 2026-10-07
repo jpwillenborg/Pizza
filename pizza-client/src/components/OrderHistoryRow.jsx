@@ -168,7 +168,7 @@ export default function OrderHistoryRow({ receipt, index, handleRowStatusChange,
                 </span>
 
                 <span className="text-[0.85rem] text-white/70 bg-white/5 px-2 py-1 rounded-[4px] text-left whitespace-normal break-words inline-block w-full sm:w-auto sm:flex-grow min-w-0">
-                  {pizza.toppings?.length === 0 ? 'Cheese Base' : pizza.toppings?.map(formatToppingName).join(', ')}
+                  {pizza.toppings?.length === 0 ? 'Cheese' : pizza.toppings?.map(formatToppingName).join(', ')}
                 </span>
 
               </div>
