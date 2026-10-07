@@ -78,7 +78,7 @@ export default function PizzaDashboard({ menu, size, setSize, selectedToppings, 
 
           <div className="bg-background-surface p-6 rounded-[16px] shadow-flat-card transition-colors duration-250 ease-out hover:bg-background-hover w-full box-border">
             <div className="flex justify-between items-center mb-6 w-full">
-              <span className="font-semibold text-slateText-muted text-[1.05rem]">Current Build Cost:</span>
+              <span className="font-semibold text-white text-[1.05rem]">Current Build Cost:</span>
               <strong className="text-[1.35rem] text-accent-primary font-bold font-mono">{formatCurrency(getPizzaPrice(size, selectedToppings))}</strong>
             </div>
             <button 
@@ -158,7 +158,7 @@ export default function PizzaDashboard({ menu, size, setSize, selectedToppings, 
               </div>
             </div>
 
-            <div className="bg-background-surface p-5 rounded-[12px] shadow-flat-card w-full box-border">
+            <div className="bg-background-surface p-5 rounded-[12px] shadow-flat-card w-full box-border mt-6">
               <div className="flex justify-between text-[1.25rem] font-bold mb-5 text-white w-full">
                 <span>Order Total:</span>
                 <span className="text-accent-primary font-mono">{formatCurrency(cart.reduce((sum, i) => sum + i.price, 0))}</span>
