@@ -143,7 +143,7 @@ const DATASTORE_MENU = {
   basePrices: { small: 6.50, medium: 8.00, large: 10.50 },
   toppings: [
     { id: 'pepperoni', name: 'Pepperoni', price: 1.00, category: 'meat', code: 'PEP' },
-    { id: 'sausage', name: 'Sausage', price: 1.00, category: 'meat', code: 'SSG' },
+    { id: 'ham', name: 'Ham', price: 1.00, category: 'meat', code: 'HAM' },
     { id: 'bacon', name: 'Bacon', price: 1.50, category: 'meat', code: 'BCN' },
     { id: 'red_peppers', name: 'Red Peppers', price: 0.75, category: 'veggie', code: 'PEP' },
     { id: 'pineapple', name: 'Pineapple', price: 0.75, category: 'veggie', code: 'PIN' },
@@ -157,17 +157,17 @@ const STATUS_STAGES = ['Received', 'Preparing', 'Baking', 'Out for Delivery', 'D
 const DEMO_ORDER_PLANS = [
   {
     status: 'Preparing',
-    customer: { name: 'Christopher Test', phone: '+1-202-555-0101', address: 'DEMO DELIVERY ONLY' },
+    customer: { name: 'Christopher Test', phone: '+1-314-555-0101', address: 'DEMO DELIVERY ONLY' },
     pizzas: [{ size: 'medium', toppings: ['pepperoni'] }]
   },
   {
     status: 'Delivered',
-    customer: { name: 'Mary Sample', phone: '+1-202-555-0102', address: 'DEMO DELIVERY ONLY' },
-    pizzas: [{ size: 'small', toppings: ['sausage'] }]
+    customer: { name: 'Mary Sample', phone: '+1-314-555-0102', address: 'DEMO DELIVERY ONLY' },
+    pizzas: [{ size: 'small', toppings: ['ham'] }]
   },
   {
     status: 'Received',
-    customer: { name: 'Patrick Demo', phone: '+1-202-555-0103', address: 'DEMO DELIVERY ONLY' },
+    customer: { name: 'Patrick Demo', phone: '+1-314-555-0103', address: 'DEMO DELIVERY ONLY' },
     pizzas: [
       { size: 'large', toppings: ['bacon', 'red_peppers', 'pineapple'] },
       { size: 'medium', toppings: ['extra_cheese'] }

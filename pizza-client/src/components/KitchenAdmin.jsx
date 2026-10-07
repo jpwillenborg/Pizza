@@ -10,7 +10,7 @@ export default function KitchenAdmin({ orderStatus, setOrderStatus, apiBaseUrl, 
   //     totalBill: "21.00",
   //     createdAt: new Date().toISOString(),
   //     customerName: "Patrick Demo",
-  //     customerPhone: "+1-202-555-0103",
+  //     customerPhone: "+1-314-555-0103",
   //     customerAddress: "DEMO DELIVERY ONLY",
   //     items: [
   //       { size: "large", toppings: ["pepperoni", "onions"], price: 12.00 },
@@ -181,7 +181,7 @@ export default function KitchenAdmin({ orderStatus, setOrderStatus, apiBaseUrl, 
         <div className="col-span-1 h-full">
           <div className="bg-background-surface p-6 rounded-[16px] shadow-flat-card transition-colors duration-250 ease-out hover:bg-background-hover h-full flex flex-col justify-between box-border">
             <div>
-              <h3 className="mt-0 text-[1.4rem] font-bold text-white">🍕 Kitchen Dispatch</h3>
+              <h3 className="mt-0 text-[1.4rem] font-bold text-white">🍕 Order Status</h3>
               <p className="text-slateText-muted text-[0.95rem] mb-6 leading-[1.65]">Stream live status updates without refreshing the page.</p>
               <div className="bg-background p-4 rounded-[8px] mb-6 border-l-[4px] border-l-accent-primary text-[1.05rem]">
                 <strong className="text-white font-medium">Current Status:</strong> 
@@ -204,7 +204,7 @@ export default function KitchenAdmin({ orderStatus, setOrderStatus, apiBaseUrl, 
                       {isActive && activeLiveOrder && <div className="w-2 h-2 bg-accent-primary rounded-full" />}
                     </div>
                     <span className={isActive && activeLiveOrder ? 'text-accent-primary' : 'text-slateText-muted'}>
-                      {isActive && activeLiveOrder ? '' : 'Step:'} {stage}
+                      {isActive && activeLiveOrder ? '' : ''} {stage}
                     </span>
                   </button>
                 );

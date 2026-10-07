@@ -71,7 +71,7 @@ test('sandbox key and seeded orders are committed together, storing only the key
   };
   const db = { async getConnection() { return connection; } };
   const sandbox = await createSandbox(db, [{
-    customer: { name: 'Demo Guest', phone: '202-555-0101', address: 'DEMO DELIVERY ONLY' },
+    customer: { name: 'Demo Guest', phone: '314-555-0101', address: 'DEMO DELIVERY ONLY' },
     items: [{ size: 'small', toppings: [] }],
     total: 6.5
   }]);
@@ -120,7 +120,7 @@ test('order history is queried only for the authenticated sandbox', async () => 
         timestamp: '2026-10-01T00:00:00.000Z',
         items_json: '[]',
         customer_name: 'Demo Guest',
-        customer_phone: '202-555-0101',
+        customer_phone: '314-555-0101',
         customer_address: 'DEMO DELIVERY ONLY'
       }]];
     }

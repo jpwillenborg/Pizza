@@ -24,7 +24,7 @@ export default function PizzaDashboard({ menu, size, setSize, selectedToppings, 
                       key={s}
                       type="button"
                       onClick={() => setSize(s)}
-                      className={`flex md:flex-col flex-row items-center md:justify-center justify-between p-3 md:py-3 md:px-4 rounded-[12px] cursor-pointer transition-all duration-200 border-0 outline-none w-full box-border md:text-center focus-visible:ring-2 focus-visible:ring-accent-primary/20 ${
+                      className={`flex md:flex-col flex-row items-center md:justify-center justify-between p-4 md:py-3 md:px-4 rounded-[12px] cursor-pointer transition-all duration-200 border-0 outline-none w-full box-border md:text-center focus-visible:ring-2 focus-visible:ring-accent-primary/20 ${
                         isSelected ? 'bg-accent-primary text-background' : 'bg-background text-slateText-muted hover:bg-white/5 hover:text-white'
                       }`}
                     >

@@ -54,7 +54,7 @@ const FALLBACK_MENU = {
   basePrices: { small: 6.50, medium: 8.00, large: 10.50 },
   toppings: [
     { id: 'pepperoni', name: 'Pepperoni', price: 1.00, code: 'PEP' },
-    { id: 'sausage', name: 'Sausage', price: 1.00, code: 'SSG' },
+    { id: 'ham', name: 'Ham', price: 1.00, code: 'HAM' },
     { id: 'bacon', name: 'Bacon', price: 1.50, code: 'BCN' },
     { id: 'red_peppers', name: 'Red Peppers', price: 0.75, code: 'PEP' },
     { id: 'pineapple', name: 'Pineapple', price: 0.75, code: 'PIN' },

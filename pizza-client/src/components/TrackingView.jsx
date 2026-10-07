@@ -23,7 +23,7 @@ export default function TrackingView({ orderStatus, trackingError, setView, setI
             Your receipt token is active. Status updates are streaming in real-time.
           </p>
         </div>
-        <button
+        {/* <button
           type="button"
           onClick={() => {
             setIsTracking(false);
@@ -32,7 +32,7 @@ export default function TrackingView({ orderStatus, trackingError, setView, setI
           className="p-[0.55rem_1rem] text-[0.85rem] font-bold rounded-[6px] cursor-pointer transition-colors duration-150 outline-none border-0 focus-visible:ring-2 focus-visible:ring-white/20 bg-white/5 text-white hover:bg-white/10 active:bg-white/20"
         >
           New Order
-        </button>
+        </button> */}
       </div>
 
       {trackingError && (
