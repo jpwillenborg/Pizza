@@ -75,49 +75,47 @@ export default function PizzaDashboard({ menu, size, setSize, selectedToppings, 
               )}
             </div>
           </div>
-        </div>
-        <div className="bg-background-surface p-6 rounded-[16px] shadow-flat-card transition-colors duration-250 ease-out hover:bg-background-hover w-full box-border">
-          <div className="flex justify-between items-center mb-6 w-full">
-            <span className="font-semibold text-slateText-muted text-[1.05rem]">Current Build Cost:</span>
-            <strong className="text-[1.35rem] text-accent-primary font-bold font-mono">{formatCurrency(getPizzaPrice(size, selectedToppings))}</strong>
+
+          <div className="bg-background-surface p-6 rounded-[16px] shadow-flat-card transition-colors duration-250 ease-out hover:bg-background-hover w-full box-border">
+            <div className="flex justify-between items-center mb-6 w-full">
+              <span className="font-semibold text-slateText-muted text-[1.05rem]">Current Build Cost:</span>
+              <strong className="text-[1.35rem] text-accent-primary font-bold font-mono">{formatCurrency(getPizzaPrice(size, selectedToppings))}</strong>
+            </div>
+            <button 
+              className="w-full py-4 md:py-3 bg-accent-primary text-background border-0 rounded-[6px] text-[0.85rem] font-bold font-sans cursor-pointer shadow-flat-btn transition-all duration-200 hover:bg-accent-light outline-none focus-visible:ring-2 focus-visible:ring-accent-primary/20" 
+              onClick={() => { 
+                setCart([...cart, { id: Date.now(), size, toppings: [...selectedToppings], price: getPizzaPrice(size, selectedToppings) }]); 
+                resetToppings();
+              }}
+            >
+              Add Pizza to Order
+            </button>
           </div>
-          <button 
-            className="w-full py-4 md:py-3 bg-accent-primary text-background border-0 rounded-[6px] text-[0.85rem] font-bold font-sans cursor-pointer shadow-flat-btn transition-all duration-200 hover:bg-accent-light outline-none focus-visible:ring-2 focus-visible:ring-accent-primary/20" 
-            onClick={() => { 
-              setCart([...cart, { id: Date.now(), size, toppings: [...selectedToppings], price: getPizzaPrice(size, selectedToppings) }]); 
-              resetToppings();
-            }}
-          >
-            Add Pizza to Order
-          </button>
         </div>
       </div>
-
       <div className="col-span-1 md:pl-10 w-full flex flex-col justify-start gap-4 relative">
         <h3 className="m-0 text-[1.4rem] font-bold text-white mt-4 md:mt-0">2. Your Cart</h3>
-        <div className="flex flex-col gap-6 w-full">
-          {cart.length === 0 ? (
-            <div className="text-center p-12 border-0 rounded-[12px] bg-background-surface w-full box-border">
-              <p className="text-slateText-muted m-0 italic text-[1.05rem]">Your cart is empty. Build a pizza and add it to your cart to begin.</p>
-            </div>
-          ) : (
-            <div className="flex flex-col gap-3 w-full">
-              {cart.map((item) => {
-                return (
-                  <div key={item.id} className="bg-background-surface p-4 rounded-[16px] flex justify-between items-center shadow-md w-full box-border">
-                    <div>
-                      <span className="capitalize font-bold text-[1.05rem] text-white">{item.size} Size Pizza</span>
-                      <div className="text-[0.85rem] text-slateText-muted mt-1 font-sans">
-                        Toppings: {item.toppings.length === 0 ? 'Cheese' : item.toppings.map(tId => menu.toppings?.find(t => t.id === tId)?.name).join(', ')}
-                      </div>
+        {cart.length === 0 ? (
+          <div className="text-center p-12 border-0 rounded-[12px] bg-background-surface w-full box-border">
+            <p className="text-slateText-muted m-0 italic text-[1.05rem]">Your cart is empty. Build a pizza and add it to your cart to begin.</p>
+          </div>
+        ) : (
+          <div className="flex flex-col gap-3 w-full">
+            {cart.map((item) => {
+              return (
+                <div key={item.id} className="bg-background-surface p-4 rounded-[16px] flex justify-between items-center shadow-md w-full box-border">
+                  <div>
+                    <span className="capitalize font-bold text-[1.05rem] text-white">{item.size} Size Pizza</span>
+                    <div className="text-[0.85rem] text-slateText-muted mt-1 font-sans">
+                      Toppings: {item.toppings.length === 0 ? 'Cheese' : item.toppings.map(tId => menu.toppings?.find(t => t.id === tId)?.name).join(', ')}
                     </div>
-                    <strong className="text-[1.1rem] text-white font-bold font-mono">{formatCurrency(item.price)}</strong>
                   </div>
-                );
-              })}
-            </div>
-          )}
-        </div>
+                  <strong className="text-[1.1rem] text-white font-bold font-mono">{formatCurrency(item.price)}</strong>
+                </div>
+              );
+            })}
+          </div>
+        )}
 
         {cart.length > 0 && (
           <div className="flex flex-col gap-4 w-full relative mt-6 md:mt-8">
