@@ -5,11 +5,11 @@ export default function PizzaDashboard({ menu, size, setSize, selectedToppings, 
   const toppingsList = menu && menu.toppings ? menu.toppings : [];
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-10 mb-24 text-left md:min-h-[820px] md:mt-[52px] relative">
-      <div className="col-span-1 flex flex-col justify-start gap-6 w-full relative">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-10 mb-24 text-left md:min-h-[820px] md:mt-10 relative">
+      <div className="col-span-1 flex flex-col justify-start gap-4 w-full relative">
+        <h3 className="m-0 text-[1.4rem] font-bold text-white mt-4 md:mt-0">1. Build Your Pizza</h3>
         <div className="flex flex-col gap-6 w-full">
-          <h3 className="md:absolute md:-top-11 md:left-0 m-0 text-[1.4rem] font-bold text-white mb-6 md:mb-0">1. Build Your Pizza</h3>
-          <div className="bg-background-surface p-6 rounded-[16px] shadow-flat-card transition-colors duration-250 ease-out hover:bg-background-hover w-full box-border mb-2">
+          <div className="bg-background-surface p-6 rounded-[16px] shadow-flat-card transition-colors duration-250 ease-out hover:bg-background-hover w-full box-border">
             <h4 className="text-[1.05rem] font-bold text-white mb-4 uppercase tracking-wider font-mono">Select Base Size</h4>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3 w-full">
@@ -93,9 +93,9 @@ export default function PizzaDashboard({ menu, size, setSize, selectedToppings, 
         </div>
       </div>
 
-      <div className="col-span-1 md:pl-10 w-full mt-4 md:mt-0 flex flex-col gap-6 relative">
-        <div>
-          <h3 className="md:absolute md:-top-11 md:left-10 m-0 text-[1.4rem] font-bold text-white mb-6 md:mb-0">2. Your Cart</h3>
+      <div className="col-span-1 md:pl-10 w-full flex flex-col justify-start gap-4 relative">
+        <h3 className="m-0 text-[1.4rem] font-bold text-white mt-4 md:mt-0">2. Your Cart</h3>
+        <div className="flex flex-col gap-6 w-full">
           {cart.length === 0 ? (
             <div className="text-center p-12 border-0 rounded-[12px] bg-background-surface w-full box-border">
               <p className="text-slateText-muted m-0 italic text-[1.05rem]">Your cart is empty. Build a pizza and add it to your cart to begin.</p>
@@ -120,8 +120,8 @@ export default function PizzaDashboard({ menu, size, setSize, selectedToppings, 
         </div>
 
         {cart.length > 0 && (
-          <div className="flex flex-col gap-6 w-full md:mt-[52px] relative">
-            <h3 className="md:absolute md:-top-11 md:left-0 m-0 text-[1.4rem] font-bold text-white mb-6 md:mb-0">3. Place Order</h3>
+          <div className="flex flex-col gap-4 w-full relative mt-6 md:mt-8">
+            <h3 className="m-0 text-[1.4rem] font-bold text-white mt-4 md:mt-0">3. Place Order</h3>
             
             <div className="bg-background-surface p-5 rounded-[12px] shadow-flat-card w-full box-border flex flex-col gap-4">
               <div>
