@@ -141,7 +141,7 @@ export default function PizzaDashboard({ menu, size, setSize, selectedToppings, 
                   <label className="block text-slateText-muted/50 font-bold uppercase tracking-wider text-[0.72rem] mb-1.5">Phone:</label>
                   <input 
                     type="text" 
-                    value="(555) 019-2834" 
+                    value="(555) 867-5309" 
                     readOnly 
                     className="w-full box-border p-4 md:p-4 bg-background border-0 text-white/90 rounded-[6px] text-[0.88rem] font-mono outline-none opacity-80 cursor-not-allowed select-none"
                   />
