@@ -1,0 +1,44 @@
+name: Pizza CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  client:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: pizza-client/package-lock.json
+      - run: npm ci
+        working-directory: pizza-client
+      - run: npm run lint
+        working-directory: pizza-client
+      - run: npm run build
+        working-directory: pizza-client
+
+  server:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: pizza-server/package-lock.json
+      - run: npm ci
+        working-directory: pizza-server
+      - run: npm test
+        working-directory: pizza-server
+      - run: node --check server.js
+        working-directory: pizza-server
+      - run: npm audit --omit=dev
+        working-directory: pizza-server
