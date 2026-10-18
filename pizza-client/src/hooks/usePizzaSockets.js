@@ -112,7 +112,7 @@ export function usePizzaSockets() {
     const updateCurrentOrder = ({ id, status }) => {
       if (id === trackedOrderId) setOrderStatus(status);
     };
-    const handleOrderNotFound = () => setTrackingError('This demo order could not be found.');
+    const handleOrderNotFound = () => setTrackingError('Please create an order first.');
 
     socket.on('connect', trackCurrentOrder);
     socket.on('order_status_changed', updateCurrentOrder);

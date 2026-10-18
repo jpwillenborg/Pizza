@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './styles/index.css';
+import { useLocation } from 'react-router-dom';
 import SiteNavbar from './components/SiteNavbar';
 import SiteFooter from './components/SiteFooter';
 import DashboardHeader from './components/DashboardHeader';
@@ -8,8 +9,11 @@ import KitchenAdmin from './components/KitchenAdmin';
 import PizzaDashboard from './components/PizzaDashboard';
 import { usePizzaSockets } from './hooks/usePizzaSockets';
 import { formatCurrency, getNumericPrice } from './utils/priceUtils';
+import NotFoundPage from './components/NotFoundPage';
 
 export default function App() {
+  const location = useLocation();
+  
   const {
     menu,
     loading,
@@ -36,9 +40,7 @@ export default function App() {
     );
   };
 
-  const resetToppings = () => {
-    setSelectedToppings([]);
-  };
+  const resetToppings = () => { setSelectedToppings([]); };
 
   const getPizzaPrice = (pSize, pToppings) => {
     if (!menu || !menu.basePrices) return 0;
@@ -53,7 +55,6 @@ export default function App() {
   const handleCheckout = async () => {
     setCheckoutError('');
     setIsSubmitting(true);
-
     try {
       const response = await fetch(`${API_BASE_URL}/api/orders`, {
         method: 'POST',
@@ -62,7 +63,6 @@ export default function App() {
       });
       const result = await response.json();
       if (!response.ok) throw new Error(result.message || result.error || 'Unable to place the demo order.');
-
       trackOrder(result.id);
       setView('tracking');
       setCart([]);
@@ -82,6 +82,18 @@ export default function App() {
     );
   }
 
+  if (location.pathname !== '/') {
+    return (
+      <div className="w-full max-w-full overflow-x-hidden min-h-screen flex flex-col justify-between bg-[#090d16] relative font-sans antialiased text-[#a0aec0]">
+        <div className="app-shell flex flex-col w-full max-w-full overflow-x-hidden box-border flex-grow md:min-h-[820px]">
+          <SiteNavbar />
+          <NotFoundPage />
+        </div>
+        <SiteFooter />
+      </div>
+    );
+  }
+
   return (
     <div className="w-full max-w-full overflow-x-hidden min-h-screen flex flex-col justify-between bg-[#090d16] relative font-sans antialiased text-[#a0aec0]">
       <div className="app-shell flex flex-col w-full max-w-full overflow-x-hidden box-border flex-grow md:min-h-[820px]">
@@ -95,27 +107,16 @@ export default function App() {
               {view === 'tracking' && (
                 <TrackingView orderStatus={orderStatus} trackingError={trackingError} setView={setView} setIsTracking={() => {}} />
               )}
-              
               {view === 'admin' && (
-                <KitchenAdmin 
-                  orderStatus={orderStatus} setOrderStatus={setOrderStatus} apiBaseUrl={API_BASE_URL} sandboxKey={sandboxKey}
-                  formatCurrency={formatCurrency} getNumericPrice={getNumericPrice} 
-                />
+                <KitchenAdmin orderStatus={orderStatus} setOrderStatus={setOrderStatus} apiBaseUrl={API_BASE_URL} sandboxKey={sandboxKey} formatCurrency={formatCurrency} getNumericPrice={getNumericPrice} />
               )}
-              
               {view === 'dashboard' && (
-                <PizzaDashboard 
-                  menu={menu} size={size} setSize={setSize} selectedToppings={selectedToppings} 
-                  handleToppingToggle={handleToppingToggle} resetToppings={resetToppings} getPizzaPrice={getPizzaPrice} 
-                  formatCurrency={formatCurrency} cart={cart} setCart={setCart} handleCheckout={handleCheckout}
-                  checkoutError={checkoutError} isSubmitting={isSubmitting}
-                />
+                <PizzaDashboard menu={menu} size={size} setSize={setSize} selectedToppings={selectedToppings} handleToppingToggle={handleToppingToggle} resetToppings={resetToppings} getPizzaPrice={getPizzaPrice} formatCurrency={formatCurrency} cart={cart} setCart={setCart} handleCheckout={handleCheckout} checkoutError={checkoutError} isSubmitting={isSubmitting} />
               )}
             </div>
           </div>
         </div>
       </div>
-
       <SiteFooter />
     </div>
   );
