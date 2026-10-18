@@ -21,6 +21,7 @@ The application is structured into two entirely separate modules to preserve str
 * **Backend API:** Node.js, Express API Engine, Socket.IO WebSockets
 * **Database / Persistence Layer:** MySQL Relational Storage Engine (Production) / V8 In-Memory Object Datastores (Sandbox Mode)
 * **Live Infrastructure Hosting:** Apache Linux Server (Static Frontend Assets), Render Web Service Containers (Backend Node Service)
+* **Automated CI/CD Delivery:** GitHub Actions core orchestration engine. Frontend updates pushed to the `main` branch trigger isolated Node compilation layers and distribute minimized output directories over secure automated FTPS handshakes.
 
 ---
 
