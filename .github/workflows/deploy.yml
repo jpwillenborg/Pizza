@@ -1,0 +1,43 @@
+name: Build and Deploy Pizza Frontend
+
+on:
+  push:
+    branches: [ main ]
+    # Only trigger this workflow if files inside the frontend folder change
+    paths:
+      - 'pizza-client/**'
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+        # Tells the caching mechanism to look inside the client subfolder
+        cache-dependency-path: ./pizza-client/package-lock.json
+
+    # Clean install and build production files inside the client folder
+    - name: Install and Build Frontend
+      working-directory: ./pizza-client
+      run: |
+        npm ci
+        npm run build
+
+    # Deploy the dist folder generated inside the client folder
+    - name: FTP Deploy to Bluehost
+      uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+      with:
+        server: ${{ secrets.SSH_HOST }}
+        username: ${{ secrets.SSH_USER }}
+        password: ${{ secrets.FTP_PASSWORD }} 
+        port: 21
+        protocol: ftps
+        local-dir: ./pizza-client/dist/ # Pointing to the nested dist directory
+        server-dir: ./pizza.jpwillenborg.com/
