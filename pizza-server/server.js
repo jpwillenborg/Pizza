@@ -29,7 +29,7 @@ app.set('trust proxy', 1);
 
 const allowedOrigins = process.env.ALLOWED_ORIGINS 
   ? process.env.ALLOWED_ORIGINS.split(',').map(url => url.trim()).filter(Boolean)
-  : ["http://localhost:5174", "https://jpwillenborg.com"];
+  : ["http://localhost:5174", "https://pizza.jpwillenborg.com"];
 
 app.use(cors({
   origin: allowedOrigins,
