@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function DashboardHeader({ view, isTracking, setView }) {
+export default function DashboardHeader({ view, isTracking, setView, isAppLoading }) {
   return (
     <div className="flex flex-col pb-4 mb-6 text-left">
       <div className="w-full">
@@ -11,43 +11,45 @@ export default function DashboardHeader({ view, isTracking, setView }) {
         </p>
       </div>
 
-      <div className="flex flex-col sm:flex-row gap-3 justify-start items-stretch sm:items-center w-full pt-1 md:mt-8">
-        <button 
-          onClick={() => setView('dashboard')} 
-          className={`w-full sm:w-auto text-center px-5 py-3 text-[0.9rem] font-bold font-sans rounded-[6px] border-0 cursor-pointer transition-all duration-200 outline-none focus-visible:ring-2 focus-visible:ring-accent-primary/20 ${
-            view === 'dashboard' 
-              ? 'bg-accent-primary text-background' 
-              : 'bg-white/5 text-white hover:bg-white/10'
-          }`}
-        >
-          Customer Portal
-        </button>
-
-        <button 
-          onClick={() => setView('admin')} 
-          className={`w-full sm:w-auto text-center px-5 py-3 text-[0.9rem] font-bold font-sans rounded-[6px] border-0 cursor-pointer transition-all duration-200 outline-none focus-visible:ring-2 focus-visible:ring-accent-primary/20 ${
-            view === 'admin' 
-              ? 'bg-accent-primary text-background' 
-              : 'bg-white/5 text-white hover:bg-white/10'
-          }`}
-        >
-          Kitchen Admin
-        </button>
-
-        <button 
-          disabled={!isTracking}
-          onClick={() => isTracking && setView('tracking')} 
-          className={`w-full sm:w-auto text-center px-5 py-3 text-[0.9rem] font-bold font-sans rounded-[6px] border-0 transition-all duration-200 outline-none focus-visible:ring-2 focus-visible:ring-accent-primary/20 ${
-            view === 'tracking' 
-              ? 'bg-accent-primary text-background' 
-              : !isTracking
-                ? 'bg-white/5 text-white/40 cursor-not-allowed opacity-40'
+      {!isAppLoading && (
+        <div className="flex flex-col sm:flex-row gap-3 justify-start items-stretch sm:items-center w-full pt-1 md:mt-8">
+          <button 
+            onClick={() => setView('dashboard')} 
+            className={`w-full sm:w-auto text-center px-5 py-3 text-[0.9rem] font-bold font-sans rounded-[6px] border-0 cursor-pointer transition-all duration-200 outline-none focus-visible:ring-2 focus-visible:ring-accent-primary/20 ${
+              view === 'dashboard' 
+                ? 'bg-accent-primary text-background' 
                 : 'bg-white/5 text-white hover:bg-white/10'
-          }`}
-        >
-          Order Tracker
-        </button>
-      </div>
+            }`}
+          >
+            Customer Portal
+          </button>
+
+          <button 
+            onClick={() => setView('admin')} 
+            className={`w-full sm:w-auto text-center px-5 py-3 text-[0.9rem] font-bold font-sans rounded-[6px] border-0 cursor-pointer transition-all duration-200 outline-none focus-visible:ring-2 focus-visible:ring-accent-primary/20 ${
+              view === 'admin' 
+                ? 'bg-accent-primary text-background' 
+                : 'bg-white/5 text-white hover:bg-white/10'
+            }`}
+          >
+            Kitchen Admin
+          </button>
+
+          <button 
+            disabled={!isTracking}
+            onClick={() => isTracking && setView('tracking')} 
+            className={`w-full sm:w-auto text-center px-5 py-3 text-[0.9rem] font-bold font-sans rounded-[6px] border-0 transition-all duration-200 outline-none focus-visible:ring-2 focus-visible:ring-accent-primary/20 ${
+              view === 'tracking' 
+                ? 'bg-accent-primary text-background' 
+                : !isTracking
+                  ? 'bg-white/5 text-white/40 cursor-not-allowed opacity-40'
+                  : 'bg-white/5 text-white hover:bg-white/10'
+            }`}
+          >
+            Order Tracker
+          </button>
+        </div>
+      )}
     </div>
   );
 }
